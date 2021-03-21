@@ -5,7 +5,7 @@ const path = require('path');
 
 //Sets up express app
 const app = express();
-const PORT = 3005;
+const PORT = 3000;
 
 
 //Sets up Express app to handle the data
