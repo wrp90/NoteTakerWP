@@ -2,11 +2,10 @@
 const express = require("express");
 const fs = require('fs');
 const path = require('path');
-const dataBase = require('./db/db')
 
 //Sets up express app
 const app = express();
-const PORT = 3000;
+const PORT = 3005;
 
 
 //Sets up Express app to handle the data
@@ -17,15 +16,14 @@ app.use(express.static('public'));
 //DB const
 var dbInput = JSON.parse(fs.readFileSync('./db/db.json', 'UTF-8'));
 
-//Get notes page
+//Get notes html page
 app.get("/notes", function (req, res) {
-    // console.log('Response')
     res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 
 //Get notes to stay on page after save
 app.get("/api/notes", function (req, res) {
-    // console.log('db Input: ', dbInput);
+    // console.log(res)
     res.json(dbInput);
 });
 
@@ -40,7 +38,17 @@ app.post("/api/notes", function (req, res) {
 });
 
 //Delete notes
-
+app.delete('/api/notes/:id', (req, res) => {
+    let newID = req.params.id;
+    for (let i = 0; i < dbInput.length; i++){
+        if (newID === dbInput[i].id) {
+            dbInput.splice(i, 1);
+            break;
+        }
+    };
+    fs.writeFileSync('./db/db.json', JSON.stringify(dbInput));
+    res.json(dbInput);
+});
 
 //Get html pages
 app.get('/notes', (req, res) => {
